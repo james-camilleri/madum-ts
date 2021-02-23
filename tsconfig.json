@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "lib": ["es2020", "dom", "DOM.Iterable"],
+    "module" : "commonjs",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es2018"
+  },
+  "exclude": [
+    "node_modules",
+    "src\\libs"
+  ]
+}

@@ -1,0 +1,155 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MadumTS 🥁🐍</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="sidebar">
+    <h1>MadumTS 🥁🐍</h1>
+    <div class="section">
+      <div class="control-group">
+        <label>Size</label>
+        <div class="row">
+          <input type="text" id="width" placeholder="width" class="control">
+          <span>x</span>
+          <input type="text" id="height" placeholder="height" class="control">
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="control-group">
+        <label>Spiral</label>
+        <select class="control" name="spiral" id="spiral">
+          <option value="archimedean">Archimedean</option>
+          <option value="rectangular">Rectangular</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Starting count</label>
+        <input type="text" id="startingCount" value="1" class="control">
+      </div>
+      <div class="control-group">
+        <label>Starting size</label>
+        <div class="row">
+          <input type="text" id="startingSize" value="66" class="control">
+          <span>%</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Scaling ratio</label>
+        <select class="control" name="scaleRatio" id="scaleRatio">
+          <option value="octave">Octave (2)</option>
+          <option value="majorSeventh">Major Seventh (15 / 8)</option>
+          <option value="minorSeventh">Minor Seventh (16 / 9)</option>
+          <option value="majorSixth">Major Sixth (5 / 3)</option>
+          <option value="minorSixth">Minor Sixth (8 / 5)</option>
+          <option value="fifth">Fifth (3 / 2)</option>
+          <option value="augmentedFourth">Augmented Fourth (45 / 32)</option>
+          <option value="fourth">Fourth (4 / 3)</option>
+          <option value="majorThird">Major Third (5 / 4)</option>
+          <option value="minorThird">Minor Third (6 / 5)</option>
+          <option value="majorSecond">Major Second (9 / 8)</option>
+          <option value="minorSecond">Minor Second (16 / 15)</option>
+          <option value="cinema">Cinema (2.39)</option>
+          <option value="golden">Golden (1.618)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Frequency</label>
+        <select class="control" name="scaleFrequency" id="scaleFrequency">
+          <option value="double">Double</option>
+          <option value="triple">Triple</option>
+          <option value="quadruple">Quadruple</option>
+          <option value="quintuple">Quintuple</option>
+          <option value="exponential">Exponential</option>
+          <option value="fibonacci">Fibonacci</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Maximum scaling levels</label>
+        <input type="text" id="maxLevels" value="5" class="control">
+      </div>
+      <div class="control-group">
+        <label>Padding</label>
+        <input type="text" id="padding" value="5" class="control">
+      </div>
+      <div class="control-group">
+        <label>Rotation increment</label>
+        <div class="row">
+          <input type="text" id="rotation" value="15" class="control">
+          <span>°</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Wiggle</label>
+        <div class="row">
+          <input type="text" id="wiggle" value="5" class="control">
+          <span>%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="control-group">
+        <label>Maximum # of tiles</label>
+        <input type="text" id="maxTiles" value="200" class="control">
+      </div>
+      <div class="control-group">
+        <label>Maximum processing time</label>
+        <div class="row">
+          <input type="text" id="maxTime" value="60" class="control">
+          <span>seconds</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="control-group">
+        <div class="row">
+          <label>Background</label>
+          <input type="color" id="backgroundColour" value="#ffffff" class="control">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="row">
+          <label>Foreground</label>
+          <input type="color" id="foregroundColour" value="#ffffff" class="control">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="row">
+          <label>Highlight</label>
+          <input type="color" id="highlightColour"value="#ef7d00" class="control">
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="control-group">
+        <label>Debug collisions</label>
+        <input type="checkbox" id="debug" class="control">
+      </div>
+      <div class="control-group">
+        <label>Log to console</label>
+        <input type="checkbox" id="log" class="control">
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="row">
+        <button id="generate" class="control button">Generate</button>
+        <a id="save" class="control button">Save</a>
+      </div>
+    </div>
+  </nav>
+
+  <svg id="canvas"></svg>
+  <div id="status"></div>
+</body>
+</html>
