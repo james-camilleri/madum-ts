@@ -1,6 +1,7 @@
 import './style.css'
 
 import SvgTiler from './tiler/svg-tiler'
+import { Status } from './types'
 import * as svg from './utils/svg'
 
 const svgResolver = require.context('.', false, /\.svg$/)
@@ -9,7 +10,8 @@ const paths = svgs.map(svg.findPaths).flat();
 
 (() => {
   const canvasSvg = document.querySelector('#canvas') as SVGGraphicsElement
-  if (canvasSvg == null) return
+  const statusBlock = document.querySelector('#status') as HTMLElement
+  if (canvasSvg == null || statusBlock == null) return
 
   const canvas = new SvgTiler(canvasSvg, paths)
   const colours: Colours = {
@@ -19,6 +21,13 @@ const paths = svgs.map(svg.findPaths).flat();
   }
 
   setupColourPickers(colours)
+
+  function updateStatus ({ tilesPlaced = 0, totalTime = 0 }: Status): void {
+    statusBlock.innerHTML = `
+      <span><strong>Tiles placed:</strong> ${tilesPlaced}</span><br>
+      <span><strong>Total running time:</strong> ${totalTime}s</span>
+    `
+  }
 
   const generateButton = document.querySelector('#generate')
   generateButton?.addEventListener('click', () => {
@@ -43,12 +52,13 @@ const paths = svgs.map(svg.findPaths).flat();
         maxTime: (document.getElementById('maxTime') as HTMLFormElement).value
       },
       debug: (document.getElementById('debug') as HTMLFormElement).checked,
-      log: (document.getElementById('log') as HTMLFormElement).checked
+      log: (document.getElementById('log') as HTMLFormElement).checked,
       // colours: {
       //   background: colours.background,
       //   foreground: colours.foreground,
       //   highlight: colours.highlight
       // },
+      onStatusUpdate: updateStatus
     })
 
     canvas.tile()

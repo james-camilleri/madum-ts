@@ -1,4 +1,4 @@
-import { Point } from '../types'
+import { Config, Point } from '../types'
 import * as random from '../utils/random'
 import * as svg from '../utils/svg'
 import CollisionMap from './collision-map'
@@ -270,13 +270,21 @@ export default class SvgTiler {
         this.tiles.outOfBounds.push(tile)
         this.tiles.failed++
 
-        if (this.tiles.failed >= 50) {
+        if (this.tiles.failed >= 100) {
           this.scaleSequence.shift()
           this.tiles.failed = 0
         }
       }
 
       this.time.total = (Date.now() - this.time.start) / 1000
+
+      const onStatusUpdate = this.config.onStatusUpdate
+      if (onStatusUpdate != null) {
+        onStatusUpdate({
+          tilesPlaced: this.tiles.placed.length,
+          totalTime: this.time.total
+        })
+      }
 
       if (this.stop()) {
         console.log('time', this.time.total)
@@ -313,34 +321,4 @@ export default class SvgTiler {
       }
     }
   }
-}
-
-interface Config {
-  size: {
-    width: number
-    height: number
-  }
-  spiral: string
-  tiles: {
-    startCount: number
-    startSize: number
-    scaleRatio: string
-    scaleFrequency: string
-    maxLevels: number
-    padding: number
-    rotationIncrement: number
-    wiggle: number
-  }
-  stopConditions: {
-    maxTiles: number
-    maxTime: number
-  }
-  colours: {
-    background: string
-    foreground: string
-    highlight: string
-  }
-  twoPass: boolean
-  debug: boolean
-  log: boolean
 }
