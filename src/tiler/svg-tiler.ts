@@ -62,6 +62,7 @@ export default class SvgTiler {
 
   private origin: Point
   private bounds: Point[]
+  private highlightBounds: Point[]
 
   private collisionMap: CollisionMap
   private tiles: {
@@ -73,6 +74,7 @@ export default class SvgTiler {
   private time: {
     start: number
     total: number
+    lastPlaced: number
   }
 
   private highlight: {
@@ -152,6 +154,15 @@ export default class SvgTiler {
       { x: this.width * -0.01, y: this.height * 1.01 }
     ]
 
+    // Highlight bounds of canvas.
+    // Only tiles within these bounds are considered for highlights.
+    this.highlightBounds = [
+      { x: this.width * 0.1, y: this.height * 0.1 },
+      { x: this.width * 0.9, y: this.height * 0.1 },
+      { x: this.width * 0.9, y: this.height * 0.9 },
+      { x: this.width * 0.1, y: this.height * 0.9 }
+    ]
+
     this.tiles = {
       placed: [],
       outOfBounds: [],
@@ -163,15 +174,21 @@ export default class SvgTiler {
 
     this.time = {
       start: 0,
-      total: 0
+      total: 0,
+      lastPlaced: 0
     }
 
     this.highlight = {
       applied: false,
-      threshold: 0.01
+      threshold: 0.03
     }
+  }
 
-    // Draw outer bounds of canvas id debug mode is enabled.
+  tile (): void {
+    this.clear()
+    this.time.start = Date.now()
+
+    // Draw outer bounds of canvas if debug mode is enabled.
     if (this.config.debug) {
       const bounds = svg.createElement('path', {
         stroke: 'yellow',
@@ -181,11 +198,6 @@ export default class SvgTiler {
       }) as SVGPathElement
       this.svg.appendChild(bounds)
     }
-  }
-
-  tile (): void {
-    this.clear()
-    this.time.start = Date.now()
 
     this.placeTile()
   }
@@ -256,11 +268,15 @@ export default class SvgTiler {
         this.tiles.placed.push(tile)
         this.collisionMap.add(tile)
         this.tiles.failed = 0
+        this.time.lastPlaced = Date.now()
 
         // Randomly highlight a single tile orange,
         // if no tiles have been painted yet.
         const rand = Math.random()
-        if (!this.highlight.applied && (rand < this.highlight.threshold)) {
+        if (
+          !this.highlight.applied &&
+          rand < this.highlight.threshold &&
+          tile.inBounds(this.highlightBounds)) {
           tile.svg.setAttribute('fill', this.config.colours.highlight)
           this.highlight.applied = true
         } else {
@@ -270,8 +286,9 @@ export default class SvgTiler {
         this.tiles.outOfBounds.push(tile)
         this.tiles.failed++
 
-        if (this.tiles.failed >= 100) {
-          this.scaleSequence.shift()
+        const timeSinceLastPlaced = (Date.now() - this.time.lastPlaced) / 1000
+        if (this.tiles.failed >= 100 || timeSinceLastPlaced > 2) {
+          this.scaleSequence.shift(true)
           this.tiles.failed = 0
         }
       }
@@ -282,7 +299,8 @@ export default class SvgTiler {
       if (onStatusUpdate != null) {
         onStatusUpdate({
           tilesPlaced: this.tiles.placed.length,
-          totalTime: this.time.total
+          totalTime: this.time.total.toFixed(2),
+          averageTimeToPlace: (this.time.total / this.tiles.placed.length).toFixed(2)
         })
       }
 

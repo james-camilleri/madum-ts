@@ -22,7 +22,11 @@ export interface SvgAttributes {
   [attr: string]: string | number
 }
 
-export interface Status { tilesPlaced: number, totalTime: number }
+export interface Status {
+  tilesPlaced: number
+  totalTime: string
+  averageTimeToPlace: string
+}
 
 export interface Config {
   size: {

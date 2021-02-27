@@ -65,10 +65,10 @@ export default class ScaleSequence {
     return scale
   }
 
-  shift (): void {
-    if (this.level <= this.maxLevel) {
+  shift (overrideMaxLevel = false): void {
+    if (overrideMaxLevel || this.level <= this.maxLevel) {
       this.level++
-      this.scale /= this.ratio
+      this.scale = Math.max(this.scale / this.ratio, 0.1)
     }
 
     this.remaining = this.sequence(this.start, this.level)

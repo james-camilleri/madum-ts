@@ -22,10 +22,15 @@ const paths = svgs.map(svg.findPaths).flat();
 
   setupColourPickers(colours)
 
-  function updateStatus ({ tilesPlaced = 0, totalTime = 0 }: Status): void {
+  function updateStatus ({
+    tilesPlaced = 0,
+    totalTime = '0',
+    averageTimeToPlace = '0'
+  }: Status): void {
     statusBlock.innerHTML = `
       <span><strong>Tiles placed:</strong> ${tilesPlaced}</span><br>
-      <span><strong>Total running time:</strong> ${totalTime}s</span>
+      <span><strong>Total running time:</strong> ${totalTime}s</span><br>
+      <span><strong>Average time to place:</strong> ${averageTimeToPlace}s</span>
     `
   }
 
