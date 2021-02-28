@@ -25,9 +25,16 @@ const paths = svgs.map(svg.findPaths).flat();
   function updateStatus ({
     tilesPlaced = 0,
     totalTime = '0',
+    scale = {
+      ratio: 1,
+      level: 0
+    },
     averageTimeToPlace = '0'
   }: Status): void {
+    const { ratio, level } = scale
+
     statusBlock.innerHTML = `
+      <span><strong>Scale:</strong> ${ratio.toFixed(3)}<sup>-${level - 1}</sup> (${Math.pow(ratio, -level + 1).toFixed(3)})</span><br>
       <span><strong>Tiles placed:</strong> ${tilesPlaced}</span><br>
       <span><strong>Total running time:</strong> ${totalTime}s</span><br>
       <span><strong>Average time to place:</strong> ${averageTimeToPlace}s</span>
@@ -47,6 +54,7 @@ const paths = svgs.map(svg.findPaths).flat();
         startSize: (document.getElementById('startingSize') as HTMLFormElement).value,
         scaleRatio: (document.getElementById('scaleRatio') as HTMLFormElement).value,
         scaleFrequency: (document.getElementById('scaleFrequency') as HTMLFormElement).value,
+        strictFrequencies: (document.getElementById('strictFrequencies') as HTMLFormElement).checked,
         maxLevels: (document.getElementById('maxLevels') as HTMLFormElement).value,
         padding: (document.getElementById('padding') as HTMLFormElement).value,
         rotationIncrement: (document.getElementById('rotation') as HTMLFormElement).value,
@@ -58,6 +66,7 @@ const paths = svgs.map(svg.findPaths).flat();
       },
       debug: (document.getElementById('debug') as HTMLFormElement).checked,
       log: (document.getElementById('log') as HTMLFormElement).checked,
+      twoPass: (document.getElementById('twoPass') as HTMLFormElement).checked,
       // colours: {
       //   background: colours.background,
       //   foreground: colours.foreground,

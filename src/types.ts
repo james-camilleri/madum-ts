@@ -26,6 +26,7 @@ export interface Status {
   tilesPlaced: number
   totalTime: string
   averageTimeToPlace: string
+  scale: { ratio: number, level: number }
 }
 
 export interface Config {
@@ -39,6 +40,7 @@ export interface Config {
     startSize: number
     scaleRatio: string
     scaleFrequency: string
+    strictFrequencies: boolean
     maxLevels: number
     padding: number
     rotationIncrement: number

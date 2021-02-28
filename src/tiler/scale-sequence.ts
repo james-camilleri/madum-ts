@@ -16,11 +16,11 @@ const ratios = {
 }
 
 const sequences = {
-  double: (x: number, i: number) => x * (2 ^ i),
-  triple: (x: number, i: number) => x * (3 ^ i),
-  quadruple: (x: number, i: number) => x * (4 ^ i),
-  quintuple: (x: number, i: number) => x * (5 ^ i),
-  exponential: (x: number, i: number) => x ^ (i + 1),
+  double: (x: number, i: number) => x * Math.pow(2, i),
+  triple: (x: number, i: number) => x * Math.pow(3, i),
+  quadruple: (x: number, i: number) => x * Math.pow(4, i),
+  quintuple: (x: number, i: number) => x * Math.pow(5, i),
+  exponential: (x: number, i: number) => Math.pow(x, (i + 1)),
   fibonacci: (x: number, i: number) => {
     let a = 1
     let b = 0
@@ -38,12 +38,13 @@ const sequences = {
 
 export default class ScaleSequence {
   private start: number
-  private scale: number
-  private level: number
   private maxLevel: number
   private remaining: number
-  private ratio: number
   private sequence: SequenceFunction
+
+  level: number
+  ratio: number
+  scale: number
 
   init (start: number, ratio: string, sequence: string, maxLevel = 5): void {
     this.ratio = ratios[ratio]
@@ -56,19 +57,15 @@ export default class ScaleSequence {
     this.remaining = this.sequence(this.start, this.level)
   }
 
-  next (): number {
-    const scale = this.scale
-
+  next (): void {
     this.remaining--
-    if (this.remaining !== 0) { this.shift() }
-
-    return scale
+    if (this.remaining === 0) { this.shift() }
   }
 
-  shift (overrideMaxLevel = false): void {
-    if (overrideMaxLevel || this.level <= this.maxLevel) {
+  shift (): void {
+    if (this.level <= this.maxLevel) {
       this.level++
-      this.scale = Math.max(this.scale / this.ratio, 0.1)
+      this.scale /= this.ratio
     }
 
     this.remaining = this.sequence(this.start, this.level)

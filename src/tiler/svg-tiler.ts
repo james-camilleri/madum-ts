@@ -102,6 +102,7 @@ export default class SvgTiler {
         startSize: 66,
         scaleRatio: 'golden',
         scaleFrequency: 'triple',
+        strictFrequencies: false,
         maxLevels: 5,
         padding: 5,
         rotationIncrement: 15,
@@ -180,7 +181,7 @@ export default class SvgTiler {
 
     this.highlight = {
       applied: false,
-      threshold: 0.03
+      threshold: 0.05
     }
   }
 
@@ -221,11 +222,10 @@ export default class SvgTiler {
   }
 
   private placeTile (): void {
-    const startSize = (this.config.tiles.startSize / 100) * this.longestSide
-
     window.requestAnimationFrame(() => {
+      const startSize = (this.config.tiles.startSize / 100) * this.longestSide
+      const size = startSize * this.scaleSequence.scale
       const wiggle = this.config.tiles.wiggle
-      const size = startSize * this.scaleSequence.next()
       const rotation = random.rotation(this.config.tiles.rotationIncrement)
       const options = {
         padding: this.config.tiles.padding,
@@ -269,8 +269,9 @@ export default class SvgTiler {
         this.collisionMap.add(tile)
         this.tiles.failed = 0
         this.time.lastPlaced = Date.now()
+        this.scaleSequence.next()
 
-        // Randomly highlight a single tile orange,
+        // Randomly highlight a single tile,
         // if no tiles have been painted yet.
         const rand = Math.random()
         if (
@@ -287,9 +288,13 @@ export default class SvgTiler {
         this.tiles.failed++
 
         const timeSinceLastPlaced = (Date.now() - this.time.lastPlaced) / 1000
-        if (this.tiles.failed >= 100 || timeSinceLastPlaced > 2) {
-          this.scaleSequence.shift(true)
+        if (
+          !this.config.tiles.strictFrequencies &&
+          (this.tiles.failed >= 100 || timeSinceLastPlaced > 2)
+        ) {
+          this.scaleSequence.shift()
           this.tiles.failed = 0
+          this.time.lastPlaced = Date.now()
         }
       }
 
@@ -300,7 +305,9 @@ export default class SvgTiler {
         onStatusUpdate({
           tilesPlaced: this.tiles.placed.length,
           totalTime: this.time.total.toFixed(2),
-          averageTimeToPlace: (this.time.total / this.tiles.placed.length).toFixed(2)
+          averageTimeToPlace: (this.time.total / this.tiles.placed.length)
+            .toFixed(2),
+          scale: { ratio: this.scaleSequence.ratio, level: this.scaleSequence.level }
         })
       }
 
