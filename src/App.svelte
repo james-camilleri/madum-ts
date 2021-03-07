@@ -153,12 +153,11 @@
     <div class='stats-wrapper'>
       <svg
         bind:this={canvasSvg}
-        id='canvas'
         width={defaultConfig.size.x}
         height={defaultConfig.size.y}>
       </svg>
       {#if showStatus}
-        <div id='status'>
+        <div class='status'>
           <span>
             <strong>Scale: </strong>
             {status.scale.ratio.toFixed(3)}
