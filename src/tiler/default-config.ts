@@ -10,10 +10,10 @@ export const defaultConfig: Config = {
     size: 66
   },
   scale: {
-    ratio: 'majorThird',
+    ratio: 'fourth',
     frequency: 'triple',
     strictFrequency: false,
-    maxLevels: 7
+    maxLevels: 10
   },
   tile: {
     padding: 5,

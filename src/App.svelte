@@ -34,6 +34,7 @@
   let cancelled = false
   let disabled = false
   let showStatus = false
+  let showJsonEditor = false
   let status: Status = {
     tilesPlaced: 0,
     totalTime: '0',
@@ -99,6 +100,15 @@
 
     <div class="controls">
       <Controls bind:config bind:disabled />
+      <div class='control-group'>
+        <button
+          {disabled}
+          class='control button'
+          on:click={() => { showJsonEditor = !showJsonEditor }}
+        >
+          {showJsonEditor ? 'Hide' : 'Show'} JSON editor
+        </button>
+      </div>
     </div>
 
     <div class='control-group'>
@@ -129,13 +139,15 @@
     </div>
   </nav>
 
-  <textarea
-    {disabled}
-    class='config-editor'
-    on:keyup={onJsonUpdate}
-    spellcheck={false}
-    value={configJson}
-  />
+  {#if showJsonEditor}
+    <textarea
+      {disabled}
+      class='config-editor'
+      on:keyup={onJsonUpdate}
+      spellcheck={false}
+      value={configJson}
+    />
+  {/if}
 
   <div class='wrapper'>
     <div class='stats-wrapper'>

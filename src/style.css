@@ -72,6 +72,10 @@ h1 + p {
   min-width: 0;
 }
 
+.control:disabled {
+  color: rgba(0,0,0, 0.7)
+}
+
 .hint {
   opacity: 0.9;
   font-size: 0.8rem;
@@ -115,6 +119,7 @@ input[type='checkbox'].control {
   color: rgb(255, 255, 255);
   background: rgb(100, 100, 100);
   border: none;
+  box-shadow: -5px 0px 35px rgba(0,0,0, 0.9);
 }
 
 .wrapper {
