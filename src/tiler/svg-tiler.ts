@@ -1,7 +1,8 @@
-import { Config, Point } from '../types'
+import type { Config, Point } from '../types'
 import * as random from '../utils/random'
 import * as svg from '../utils/svg'
 import CollisionMap from './collision-map'
+import { defaultConfig } from './default-config'
 import ScaleSequence from './scale-sequence'
 import SvgTile from './svg-tile'
 
@@ -83,6 +84,7 @@ export default class SvgTiler {
   }
 
   private spiral: (pos: number) => Point
+  private isProcessing: boolean = false
 
   constructor (svgElement: SVGGraphicsElement, paths: string[]) {
     this.svg = svgElement
@@ -91,41 +93,10 @@ export default class SvgTiler {
   }
 
   init (config: Partial<Config>): void {
-    this.config = {
-      size: {
-        width: 500,
-        height: 500
-      },
-      spiral: 'archimedean',
-      tiles: {
-        startCount: 1,
-        startSize: 66,
-        scaleRatio: 'golden',
-        scaleFrequency: 'triple',
-        strictFrequencies: false,
-        maxLevels: 5,
-        padding: 5,
-        rotationIncrement: 15,
-        wiggle: 5
-      },
-      stopConditions: {
-        maxTiles: 1000,
-        maxTime: 60
-      },
-      colours: {
-        background: '#ffffff',
-        foreground: '#ffffff',
-        highlight: '#ef7d00'
-      },
-      twoPass: false,
+    this.config = { ...defaultConfig, ...config }
 
-      debug: false,
-      log: false,
-      ...config
-    }
-
-    this.width = this.config.size.width
-    this.height = this.config.size.height
+    this.width = this.config.size.x
+    this.height = this.config.size.y
     this.longestSide = Math.max(this.width, this.height)
     this.svg.setAttribute('width', `${this.width}px`)
     this.svg.setAttribute('height', `${this.height}px`)
@@ -133,12 +104,12 @@ export default class SvgTiler {
     const overflow = this.config.debug ? 'visible' : 'hidden'
     document.documentElement.style.setProperty('--svg-overflow', overflow)
 
+    const startCount = this.config.start.count
     const {
-      startCount,
-      scaleRatio,
-      scaleFrequency,
+      ratio: scaleRatio,
+      frequency: scaleFrequency,
       maxLevels
-    } = this.config.tiles
+    } = this.config.scale
     this.scaleSequence.init(startCount, scaleRatio, scaleFrequency, maxLevels)
 
     // Start pattern randomly in the centre third of the canvas.
@@ -185,9 +156,10 @@ export default class SvgTiler {
     }
   }
 
-  tile (): void {
+  tile (): () => void {
     this.clear()
     this.time.start = Date.now()
+    this.isProcessing = true
 
     // Draw outer bounds of canvas if debug mode is enabled.
     if (this.config.debug) {
@@ -201,6 +173,9 @@ export default class SvgTiler {
     }
 
     this.placeTile()
+
+    // Return abort function.
+    return () => { this.isProcessing = false }
   }
 
   private cleanUp (): void {
@@ -217,18 +192,19 @@ export default class SvgTiler {
   }
 
   private stop (): boolean {
-    return this.tiles.placed.length >= this.config.stopConditions.maxTiles ||
-      this.time.total >= this.config.stopConditions.maxTime
+    return !this.isProcessing ||
+      this.tiles.placed.length >= this.config.stopConditions.tiles ||
+      this.time.total >= this.config.stopConditions.time
   }
 
   private placeTile (): void {
     window.requestAnimationFrame(() => {
-      const startSize = (this.config.tiles.startSize / 100) * this.longestSide
+      const startSize = (this.config.start.size / 100) * this.longestSide
       const size = startSize * this.scaleSequence.scale
-      const wiggle = this.config.tiles.wiggle
-      const rotation = random.rotation(this.config.tiles.rotationIncrement)
+      const wiggle = this.config.tile.wiggle
+      const rotation = random.rotation(this.config.tile.rotation)
       const options = {
-        padding: this.config.tiles.padding,
+        padding: this.config.tile.padding,
         debug: this.config.debug
       }
 
@@ -289,7 +265,7 @@ export default class SvgTiler {
 
         const timeSinceLastPlaced = (Date.now() - this.time.lastPlaced) / 1000
         if (
-          !this.config.tiles.strictFrequencies &&
+          !this.config.scale.strictFrequency &&
           (this.tiles.failed >= 100 || timeSinceLastPlaced > 2)
         ) {
           this.scaleSequence.shift()
@@ -301,26 +277,29 @@ export default class SvgTiler {
       this.time.total = (Date.now() - this.time.start) / 1000
 
       const onStatusUpdate = this.config.onStatusUpdate
-      if (onStatusUpdate != null) {
-        onStatusUpdate({
-          tilesPlaced: this.tiles.placed.length,
-          totalTime: this.time.total.toFixed(2),
-          averageTimeToPlace: (this.time.total / this.tiles.placed.length)
-            .toFixed(2),
-          scale: { ratio: this.scaleSequence.ratio, level: this.scaleSequence.level }
-        })
+      const status = {
+        tilesPlaced: this.tiles.placed.length,
+        totalTime: this.time.total.toFixed(2),
+        averageTimeToPlace: (this.time.total / this.tiles.placed.length)
+          .toFixed(2),
+        scale: { ratio: this.scaleSequence.ratio, level: this.scaleSequence.level }
       }
 
       if (this.stop()) {
-        console.log('time', this.time.total)
-        console.log('tiles', this.tiles.placed.length)
         this.cleanUp()
+        if (onStatusUpdate != null) {
+          onStatusUpdate({ ...status, isProcessing: false })
+        }
 
         if (this.config.twoPass) {
           this.tiles.placed.forEach(tile => this.growTile(tile))
         }
 
         return
+      }
+
+      if (onStatusUpdate != null) {
+        onStatusUpdate({ ...status, isProcessing: true })
       }
 
       this.placeTile()

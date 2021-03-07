@@ -1,5 +1,5 @@
-import { Point } from '../types'
-import SvgTile from './svg-tile'
+import type { Point } from '../types'
+import type SvgTile from './svg-tile'
 
 export default class CollisionMap {
   private readonly map: Array<Array<Set<SvgTile>>>

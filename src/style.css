@@ -3,7 +3,8 @@
   --space-lg: 2.5rem;
   --space-md: 1rem;
   --space-sm: 0.5rem;
-  --control-background: rgb(128, 128, 128);
+  --space-xs: 0.25rem;
+  --control-background: rgb(100, 100, 100);
   --svg-overflow: hidden;
 }
 
@@ -22,17 +23,31 @@ body {
 }
 
 h1 {
+  margin: 0 0 var(--space-sm);
+}
+
+h1 + p {
   margin: 0 0 var(--space-lg);
 }
 
 .sidebar {
+  display: flex;
+  flex-direction: column;
   width: 350px;
-  padding: var(--space-md);
-  overflow-y: scroll;
-
+  padding: var(--space-md) 0;
   background: rgb(0, 0, 0);
   color: rgb(255, 255, 255);
   box-shadow: -5px 0px 35px rgba(0,0,0, 0.9);
+}
+
+.sidebar > * {
+  padding: 0 var(--space-md);
+}
+
+.controls {
+  overflow-y: scroll;
+  min-height: 0;
+  margin-right: var(--space-xs)
 }
 
 .control-group {
@@ -44,6 +59,8 @@ h1 {
 .row {
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .control {
@@ -55,16 +72,33 @@ h1 {
   min-width: 0;
 }
 
-input[type="color"].control {
+.hint {
+  opacity: 0.9;
+  font-size: 0.8rem;
+  font-style: italic;
+  margin: calc(-1 * var(--space-xs)) 0 1rem;
+}
+
+input[type='color'].control {
   flex: 1 0 auto;
   max-width: 100px;
   min-height: var(--space-lg);
   margin-left: auto;
 }
 
-.control-group label {
+input[type='checkbox'].control {
+  margin: 0 0 var(--space-sm) var(--space-sm);
+  flex: 0;
+  cursor: pointer;
+}
+
+.control-group label, .control-group .label {
   margin-bottom: var(--space-sm);
   font-weight: bold;
+}
+
+.control-group.--checkbox {
+  margin-bottom: 0;
 }
 
 .row > *:not(:first-child) {
@@ -73,6 +107,14 @@ input[type="color"].control {
 
 .section {
   margin-bottom: var(--space-lg);
+}
+
+.config-editor {
+  width: 350px;
+  padding: var(--space-md);
+  color: rgb(255, 255, 255);
+  background: rgb(100, 100, 100);
+  border: none;
 }
 
 .wrapper {
@@ -91,27 +133,39 @@ input[type="color"].control {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* .main {
-  margin: auto;
-} */
-
 .button-container {
   display: flex;
   justify-content: center;
   flex: 0;
+  padding: var(--space-md) var(--space-md) 0;
+}
+
+.button-container > * {
+  margin-right: var(--space-sm);
+}
+
+.button-container > :last-child {
+  margin-right: 0;
 }
 
 .button {
-  /* font-size: 1.2rem; */
-  /* padding: 1rem 1.5rem; */
-  /* border-radius: 2px; */
-  /* background: hsl(17, 100%, 52%); */
-  /* color: #fff; */
-  /* border: 0; */
+  font-size: 1.1rem;
+  color:rgb(255, 255, 255);
+  text-align: center;
   text-decoration: none;
   cursor: pointer;
-  /* font-family: sans-serif; */
   transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.button:hover:not(:disabled):not(.disabled) { background: hsl(0, 0%, 60%); }
+.button:active:not(:disabled):not(.disabled) {
+  background: hsl(0, 0%, 20%);
+  transform: scale(0.98);
+}
+
+.button:disabled, .button.disabled {
+  cursor: default;
+  opacity: 0.8;
 }
 
 @keyframes fadeIn {
@@ -122,10 +176,3 @@ input[type="color"].control {
 .tile {
   animation: fadeIn 0.3s ease-in;
 }
-
-/* .button:first-child { margin-right: 1rem;} */
-/* .button:hover { background: hsl(150, 50%, 20%); }
-.button:active {
-  background: hsl(150, 50%, 10%);
-  transform: scale(0.98);
-} */

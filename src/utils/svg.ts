@@ -1,4 +1,4 @@
-import { Point, SvgAttributes } from '../types'
+import type { Point, SvgAttributes } from '../types'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 const PATH_TAG_REGEX = /<path\s.*d="([\s\S]*?)"\s*[\s\S]*?\/>/g

@@ -3,6 +3,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const sveltePreprocess = require('svelte-preprocess')
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -10,7 +11,11 @@ module.exports = {
   mode: production ? 'production' : 'development',
   entry: './src/index.ts',
   resolve: {
-    extensions: ['.ts', '.js', '.svg']
+    alias: {
+      svelte: path.dirname(require.resolve('svelte/package.json'))
+    },
+    extensions: ['.mjs', '.js', '.ts', '.svelte'],
+    mainFields: ['svelte', 'browser', 'module', 'main']
   },
   devtool: 'inline-source-map',
   devServer: {
@@ -23,8 +28,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader'
+        test: /\.ts$/,
+        loader: 'ts-loader'
       }, {
         test: /\.svg$/,
         use: 'raw-loader'
@@ -34,6 +39,16 @@ module.exports = {
       }, {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      }, {
+        test: /\.svelte$/,
+        use: {
+          loader: 'svelte-loader',
+          options: {
+            compilerOptions: { dev: !production },
+            emitCss: production,
+            preprocess: sveltePreprocess({ sourceMap: !production })
+          }
+        }
       }
     ]
   },

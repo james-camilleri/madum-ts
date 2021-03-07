@@ -1,6 +1,6 @@
 import * as SAT from 'sat'
 
-import { Point, TileConfig, Transformations } from '../types'
+import type { Point, TileConfig, Transformations } from '../types'
 import * as collision from '../utils/collision'
 import * as svg from '../utils/svg'
 import createCache, { Cache } from './cached-value'

@@ -27,36 +27,40 @@ export interface Status {
   totalTime: string
   averageTimeToPlace: string
   scale: { ratio: number, level: number }
+  isProcessing: boolean
 }
 
 export interface Config {
   size: {
-    width: number
-    height: number
+    x: number
+    y: number
   }
-  spiral: string
-  tiles: {
-    startCount: number
-    startSize: number
-    scaleRatio: string
-    scaleFrequency: string
-    strictFrequencies: boolean
+  start: {
+    count: number
+    size: number
+  }
+  scale: {
+    ratio: string
+    frequency: string
+    strictFrequency: boolean
     maxLevels: number
-    padding: number
-    rotationIncrement: number
-    wiggle: number
   }
-  stopConditions: {
-    maxTiles: number
-    maxTime: number
+  tile: {
+    padding: number
+    rotation: number
+    wiggle: number
   }
   colours: {
     background: string
     foreground: string
     highlight: string
   }
+  stopConditions: {
+    tiles: number
+    time: number
+  }
+  spiral: string
   twoPass: boolean
   debug: boolean
-  log: boolean
   onStatusUpdate?: (status: Status) => void
 }

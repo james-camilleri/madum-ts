@@ -18,6 +18,7 @@
     "sat": "^0.7.1"
   },
   "devDependencies": {
+    "@tsconfig/svelte": "^1.0.10",
     "@types/webpack": "^4.41.8",
     "@types/webpack-env": "^1.15.1",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
@@ -32,11 +33,17 @@
     "eslint-webpack-plugin": "^2.5.2",
     "html-loader": "^1.3.2",
     "html-webpack-plugin": "^4.5.2",
+    "pug": "^3.0.2",
     "raw-loader": "^4.0.0",
     "style-loader": "^2.0.0",
+    "svelte": "^3.35.0",
+    "svelte-check": "^1.2.3",
+    "svelte-loader": "^3.0.0",
+    "svelte-preprocess": "^4.6.9",
     "svg-path-tools": "^1.0.0",
     "ts-loader": "^6.2.1",
-    "typescript": "^3.8.3",
+    "tslib": "^2.1.0",
+    "typescript": "^4.1.0",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0"
