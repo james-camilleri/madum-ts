@@ -1,5 +1,6 @@
-<script lang="ts">
+<script lang='ts'>
   import Checkbox from './controls/Checkbox.svelte'
+  import Colours from './controls/Colours.svelte'
   import Number from './controls/Number.svelte'
   import Select from './controls/Select.svelte'
   import Size from './controls/Size.svelte'
@@ -12,10 +13,10 @@
 </script>
 
 <template>
-  <div class="section">
+  <div class='section'>
     <Size bind:size={config.size} {disabled} />
   </div>
-  <div class="section">
+  <div class='section'>
     <Number
       {disabled}
       bind:value={config.start.count}
@@ -33,7 +34,7 @@
       unit='%'
     />
   </div>
-  <div class="section">
+  <div class='section'>
     <Select
       {disabled}
       bind:value={config.scale.ratio}
@@ -63,7 +64,7 @@
       min={3}
     />
   </div>
-  <div class="section">
+  <div class='section'>
     <Number
       {disabled}
       bind:value={config.tile.padding}
@@ -91,29 +92,11 @@
     />
   </div>
 
-  <!-- TODO: Deal with the colour pickers. -->
-  <div class="section">
-    <div class="control-group">
-      <div class="row">
-        <label for="backgroundColour">Background</label>
-        <input type="color" id="backgroundColour" value="#ffffff" class="control">
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="row">
-        <label for="foregroundColour">Foreground</label>
-        <input type="color" id="foregroundColour" value="#ffffff" class="control">
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="row">
-        <label for="highlightColour">Highlight</label>
-        <input type="color" id="highlightColour"value="#ef7d00" class="control">
-      </div>
-    </div>
+  <div class='section'>
+    <Colours colours={config.colours} />
   </div>
 
-  <div class="section">
+  <div class='section'>
     <Select
       {disabled}
       bind:value={config.spiral}
@@ -135,7 +118,7 @@
     />
   </div>
 
-  <div class="section">
+  <div class='section'>
     <StopConditions
       {disabled}
       bind:maxTiles={config.stopConditions.tiles}

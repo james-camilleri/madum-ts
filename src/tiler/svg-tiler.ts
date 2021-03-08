@@ -161,6 +161,12 @@ export default class SvgTiler {
     this.time.start = Date.now()
     this.isProcessing = true
 
+    this.svg.appendChild(svg.createElement('rect', {
+      width: '100%',
+      height: '100%',
+      fill: this.config.colours.background
+    }))
+
     // Draw outer bounds of canvas if debug mode is enabled.
     if (this.config.debug) {
       const bounds = svg.createElement('path', {
@@ -214,10 +220,7 @@ export default class SvgTiler {
         .translate(this.origin)
 
       tile.svg.classList.add('tile')
-
-      // tile.svg.setAttribute('fill', '#ffffff');
-      // tile.svg.setAttribute('stroke', '#ffffff');
-      // tile.svg.setAttribute('stroke', '#000000');
+      tile.svg.setAttribute('fill', this.config.colours.foreground)
 
       let collision = true
       let spiralPosition = 0

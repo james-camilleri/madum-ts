@@ -22,7 +22,7 @@ export const defaultConfig: Config = {
   },
   colours: {
     background: '#ffffff',
-    foreground: '#ffffff',
+    foreground: '#000000',
     highlight: '#ef7d00'
   },
   stopConditions: {
