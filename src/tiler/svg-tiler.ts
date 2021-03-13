@@ -129,10 +129,10 @@ export default class SvgTiler {
     // Highlight bounds of canvas.
     // Only tiles within these bounds are considered for highlights.
     this.highlightBounds = [
-      { x: this.width * 0.1, y: this.height * 0.1 },
-      { x: this.width * 0.9, y: this.height * 0.1 },
-      { x: this.width * 0.9, y: this.height * 0.9 },
-      { x: this.width * 0.1, y: this.height * 0.9 }
+      { x: this.width * 0.2, y: this.height * 0.2 },
+      { x: this.width * 0.8, y: this.height * 0.2 },
+      { x: this.width * 0.8, y: this.height * 0.8 },
+      { x: this.width * 0.2, y: this.height * 0.8 }
     ]
 
     this.tiles = {
@@ -152,7 +152,7 @@ export default class SvgTiler {
 
     this.highlight = {
       applied: false,
-      threshold: 0.05
+      threshold: 0.1
     }
   }
 
@@ -167,7 +167,7 @@ export default class SvgTiler {
       fill: this.config.colours.background
     }))
 
-    // Draw outer bounds of canvas if debug mode is enabled.
+    // Draw bounds of canvas if debug mode is enabled.
     if (this.config.debug) {
       const bounds = svg.createElement('path', {
         stroke: 'yellow',
@@ -176,6 +176,14 @@ export default class SvgTiler {
         d: svg.pointsToSvgPath(this.bounds)
       }) as SVGPathElement
       this.svg.appendChild(bounds)
+
+      const highlightBounds = svg.createElement('path', {
+        stroke: this.config.colours.highlight,
+        fill: 'none',
+        'stroke-width': 2,
+        d: svg.pointsToSvgPath(this.highlightBounds)
+      }) as SVGPathElement
+      this.svg.appendChild(highlightBounds)
     }
 
     this.placeTile()
