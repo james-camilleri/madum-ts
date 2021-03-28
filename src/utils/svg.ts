@@ -1,7 +1,8 @@
 import type { Point, SvgAttributes } from '../types'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
-const PATH_TAG_REGEX = /<path\s.*d="([\s\S]*?)"\s*[\s\S]*?\/>/g
+const PATH_TAG_REGEX = /<path\s.*\/>/g
+const ATTRIBUTE_REGEX = /\s([\w-]+)="([\s\S]+?)"/g
 const SIMPLE_PATH_REGEX = /[Mm][\s\S]*?[Zz]/g
 
 function createElement (tag: string, attributes: SvgAttributes = {}): SVGGraphicsElement {
@@ -22,12 +23,19 @@ function pointsToSvgPath (points: Point[]): string {
   return `M${pointString.join()}z`
 }
 
-function findPaths (svg: string): string[] {
-  const paths: string[] = []
+function findPaths (svg: string): Array<Record<string, string>> {
+  const paths: Array<Record<string, string>> = []
   const matches = svg.matchAll(PATH_TAG_REGEX)
 
   for (const match of matches) {
-    paths.push(match[1].replace(/\s+/g, ' '))
+    const pathObject = {}
+    const attributes = match[0].matchAll(ATTRIBUTE_REGEX)
+
+    for (const attribute of attributes) {
+      pathObject[attribute[1]] = attribute[2]
+    }
+
+    paths.push(pathObject)
   }
 
   return paths

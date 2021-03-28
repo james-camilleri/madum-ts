@@ -1,5 +1,6 @@
 import type { Config, Point } from '../types'
 import * as random from '../utils/random'
+import { formatTypefaceName } from '../utils/string'
 import * as svg from '../utils/svg'
 import CollisionMap from './collision-map'
 import { defaultConfig } from './default-config'
@@ -52,7 +53,7 @@ const spirals = {
 
 export default class SvgTiler {
   private readonly svg: SVGGraphicsElement
-  private readonly paths: string[]
+  private readonly paths: Array<Record<string, string>>
 
   private config: Config
 
@@ -86,7 +87,10 @@ export default class SvgTiler {
   private spiral: (pos: number) => Point
   private isProcessing: boolean = false
 
-  constructor (svgElement: SVGGraphicsElement, paths: string[]) {
+  constructor (
+    svgElement: SVGGraphicsElement,
+    paths: Array<Record<string, string>>
+  ) {
     this.svg = svgElement
     this.paths = paths
     this.scaleSequence = new ScaleSequence()
@@ -222,13 +226,21 @@ export default class SvgTiler {
         debug: this.config.debug
       }
 
-      const tile = new SvgTile(random.fromArray(this.paths), this.svg, options)
+      const path = random.fromArray(this.paths)
+      const tile = new SvgTile(path.d, this.svg, options)
         .scaleTo(random.wiggle(size, wiggle))
         .rotate(random.wiggle(rotation, wiggle))
         .translate(this.origin)
 
       tile.svg.classList.add('tile')
       tile.svg.setAttribute('fill', this.config.colours.foreground)
+
+      if (path['data-typeface'] != null) {
+        tile.svg.setAttribute(
+          'data-typeface',
+          formatTypefaceName(path['data-typeface'])
+        )
+      }
 
       let collision = true
       let spiralPosition = 0
